@@ -21,6 +21,10 @@ L2: 512
 L3: 8192
 
 Latency:
-L1:
-L2:
-L3:
+L1: 4 cycles
+L2: 12 cycles
+L3: 30 cycles(avg, depends on the slice accessed)
+
+Latency sources: 
+https://uops.info/cache.html
+https://www.7-cpu.com/cpu/IvyBridge.html
