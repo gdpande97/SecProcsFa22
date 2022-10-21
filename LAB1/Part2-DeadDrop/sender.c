@@ -74,14 +74,7 @@ int main(int argc, char **argv)
       printf("MSG is %s\n",msg);
       char *debug_msg = binary_to_string(msg);
       printf("Debug msg is %s\n", debug_msg);
-      //int binary_msg[8] = {0, 0, 0, 0, 0, 0, 0, 0};
       int i = 0;
-//     while(msg>0) {
-//	binary_msg[i] = msg%2;
-//	msg=msg/2;
-//	i++;
-//      }
-
 
       int len = 8;
       for(int j = 0; j < len; j++) {
