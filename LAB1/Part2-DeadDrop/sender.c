@@ -29,8 +29,8 @@ int main(int argc, char **argv)
   //*((char *)buf) = 1; // dummy write to trigger page allocation
   
 
-  int sets_to_watch[8] = {10, 45, 121, 180, 235, 312, 397, 447};
-  uint64_t eviction_set[8][8];
+  int set_to_watch = 270;
+  uint64_t eviction_set[8];
 
   
   int assoc = 8;
@@ -43,18 +43,16 @@ int main(int argc, char **argv)
 
   uint64_t start_add = (uint64_t) buffer;
   printf("Buffer start address is 0x%lx\n", start_add);
-  for(int set_id=0; set_id<8; set_id++) {
       int address_count = 0;
       for(int set_index = 0; set_index < 512; set_index++) {
 	  for(int way_index = 0; way_index < assoc; way_index++) {
 	      uint64_t  address = (uint64_t) (buffer + (set_index * assoc * bl_offset_size) + (way_index* bl_offset_size));
-	      if(get_set_index(address) == sets_to_watch[set_id]) {
-		  eviction_set[set_id][address_count] = address;
+	      if(get_set_index(address) == set_to_watch) {
+		  eviction_set[address_count] = address;
 		  address_count++;
 	      }
 	  }
       }
-  }
 
   printf("Buffer is allocated %c\n", *((char *)buf)); 
   // TODO:
@@ -70,32 +68,19 @@ int main(int argc, char **argv)
       sending=false;
       // TODO:
       // Put your covert channel code here
-      char *msg = string_to_binary(text_buf);
-      printf("MSG is %s\n",msg);
-      char *debug_msg = binary_to_string(msg);
-      printf("Debug msg is %s\n", debug_msg);
-      //int binary_msg[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+      int msg = string_to_int(text_buf);
       int i = 0;
-//     while(msg>0) {
-//	binary_msg[i] = msg%2;
-//	msg=msg/2;
-//	i++;
-//      }
-
 
       int len = 8;
-      for(int j = 0; j < len; j++) {
-	 if(msg[j] == '1'){
-	    printf("Sender is evicting for set[%d]\n",sets_to_watch[j]);
+	 if(msg == '1'){
 	    for(int reps= 0; reps < 10000; reps++) {
 		for(int way_num = 0; way_num < assoc; way_num++) {
-	    	    uint64_t *ptr = (uint64_t *) eviction_set[j][way_num];
+	    	    uint64_t *ptr = (uint64_t *) eviction_set[way_num];
 		    volatile char tmp = *ptr;
 		}
 	    }  
 	 }
 	 else {;}
-      }
   }
 
   printf("Sender finished.\n");
