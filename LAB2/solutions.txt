@@ -1,0 +1,23 @@
+Discussion Question 1:
+How many addresses need to be flushed at the first step?
+Answer:
+In my code I flushed 256 addresses based on the number of pages initialized in the code. However, since we are trying to create a covert channel for communication, it was possible to get the answer with 128 address as well, since all ASCII characters can be symbolized in that.
+
+Discussion Question 2:
+Now assume the attacker and victim no longer share a memory region.
+Would your attack still work? If not, changes could you need to make to make it work?
+Answer:
+It is not possible to conduct this attack without a shared memory region, since then the attacker would not be able to read anything the victim is writing. In such a case, we would have to do an attack similar to lab 1, where the lower levels of caches are shared and the threads are colocated on the same core.
+
+Discussion Question 3:
+In our example, the attacker tries to leak the values in the array
+secret_part2. In a real-world attack, people can use Spectre to leak arbitrary values in the victim’s
+address space. Explain how the attacker can achieve this.
+Answer:
+There's a few possibilities to do this. In this scenario we were leaking values by the victim accessing the particular memory location in shared memory which the attacker could see and decipher the corresponding ASCII value. Another way to leak data is bit by bit, where both the attacker and the victim are monitoring a particular cache line, and if the access time is high after flush, the bit is 0, and if it is low, the bit is 1.
+
+Discussioe Question 4:
+Try to tune the training parameters and answer this question: What is the
+fewest number of times you need to train the branch on line 9 in Listing 3 to make the attack work?
+Answer:
+I started off with training 10 times, and then tried reducing the number of times i was training. The code shows that it can work with training just once.
