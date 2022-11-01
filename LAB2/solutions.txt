@@ -14,7 +14,7 @@ In our example, the attacker tries to leak the values in the array
 secret_part2. In a real-world attack, people can use Spectre to leak arbitrary values in the victim’s
 address space. Explain how the attacker can achieve this.
 Answer:
-We can leak values in the victim's address space by training the branch predictor to predict within bounds of a particular array. Once it is trained, we can access arbitrary values in the address space of the victim, which will open up a speculative window and we can use that window to leak the data just like we did in this case.
+We can leak values in the victim's address space by training the branch predictor to predict within bounds of a particular array. Once it is trained, we can access arbitrary values in the address space of the victim relative to a particular array, which will open up a speculative window and we can use that window to leak the data just like we did in this case.
 
 Discussioe Question 4:
 Try to tune the training parameters and answer this question: What is the
