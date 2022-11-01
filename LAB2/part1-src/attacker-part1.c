@@ -12,7 +12,7 @@
 #include "lab2.h"
 #include "lab2ipc.h"
 
-#define BLOCK_NUM 256
+#define BLOCK_NUM 128
 #define ITERS 1
 /*
  * call_kernel_part1
@@ -49,7 +49,7 @@ int run_attacker(int kernel_fd, char *shared_memory) {
         char leaked_byte;
 	int access_time = 1000;
 	int itr = 0;
-	for(;itr<ITERS;) {
+	while(itr<ITERS) {
 		for(int block = 0; block < BLOCK_NUM; block++) {
 			clflush(shared_memory + 4096*block);
 		}
